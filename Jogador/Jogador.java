@@ -21,7 +21,7 @@ public abstract class Jogador {
         this.sorte = sorte;
     }
     // Como os dados dependem da sorte, o abstrato serve para implementar de acordo com a sorte
-    public abstract int jogarDados();
+    public abstract int[] jogarDados();
 
     // Move o Player
     public void mover(int casas) {

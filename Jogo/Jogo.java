@@ -2,13 +2,16 @@ package Jogo;
 
 // Importações necessárias
 import java.util.Scanner;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
 // Importa as classes de Jogador
 import Jogador.Jogador;
 import Jogador.JogadorSortudo;
+import tabuleiro.Tabuleiro;
 import Jogador.JogadorAzarado;
 import Jogador.JogadorNormal;
 
@@ -18,6 +21,7 @@ public class Jogo {
     private Scanner sc = new Scanner(System.in);
     private Random random = new Random();
     private boolean acabou = false;
+    private int [] dados = new int [2]; 
 
     public Jogo() {}
     public void iniciar() {
@@ -33,6 +37,7 @@ public class Jogo {
             }
         } while (qtd < 2 || qtd > 6);
 
+        Set<Integer> tiposEscolhidos = new HashSet<>();
         for (int i = 0; i < qtd; i++) {
             System.out.println("\n--- Jogador " + (i + 1) + " ---");
             System.out.print("Nome: ");
@@ -48,7 +53,20 @@ public class Jogo {
                 System.out.print("Tipo: ");
                 tipoEscolhido = sc.nextInt();
                 sc.nextLine();
+                if(tipoEscolhido < 1 || tipoEscolhido > 3) { 
+                	System.out.println("Tipo inválido, digite novamente.");
+                	continue;
+                }
+                if (i == qtd - 1 && tiposEscolhidos.size() == 1) {
+                    int tipoUnico = tiposEscolhidos.iterator().next();
+                    if (tipoEscolhido == tipoUnico) {
+                        System.out.println("Você precisa escolher um tipo diferente dos anteriores.");
+                        tipoEscolhido = 0;
+                    }
+                }
             } while (tipoEscolhido < 1 || tipoEscolhido > 3);
+                
+            tiposEscolhidos.add(tipoEscolhido);
 
             if (tipoEscolhido == 1) {
                 jogadores[i] = new JogadorSortudo(nome, cor);
@@ -73,12 +91,13 @@ public class Jogo {
         }
 
         mostrarResultadoFinal();
-    }
+}
 
+    
     private void jogarRodada() {
         // Só aparece no modo de jogo normal.
         if (!modoDebug) {
-            System.out.println("\n Pressione ENTER para iniciar a próxima rodada...");
+            System.out.println("\n\n\n Pressione ENTER para iniciar a próxima rodada...");
             sc.nextLine();
         }
 
@@ -112,7 +131,10 @@ public class Jogo {
                 j.setPosicao(destino);
                 System.out.println(j.getNome() + " foi para a casa " + destino);
             } else {
-                int soma = j.jogarDados();
+                dados = j.jogarDados();
+                int soma = dados[0] + dados[1];
+                System.out.println("dado 1: " + dados[0] + " dado 2: " + dados[1]);
+                pausar(1500);
                 System.out.println(j.getNome() + " andou " + soma + " casas!");
                 j.mover(soma);
             }
@@ -129,7 +151,9 @@ public class Jogo {
                 acabou = true;
                 break; // Sai do loop da rodada
             }
-
+            
+            
+            j.setUltimosDados(dados[0], dados[1]);
             if (!modoDebug && j.tirouDuplo()) {
                 System.out.println("Tirou números iguais! Joga novamente!");
                 i--;
@@ -142,6 +166,10 @@ public class Jogo {
 
         if (!acabou) {
             mostrarPosicoes();
+            System.out.println("\n==========================================TABULEIRO=======================================================");
+            Tabuleiro tabuleiro = new Tabuleiro(jogadores);
+            tabuleiro.mostrarTabuleiro();
+            System.out.println("");
         }
     }
 
@@ -291,5 +319,5 @@ public class Jogo {
                         + j.getJogadas() + " jogadas.");
             }
         }
-    }
+    }  
 }

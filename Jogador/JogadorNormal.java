@@ -13,10 +13,12 @@ public class JogadorNormal extends Jogador {
     }
 
     @Override
-    public int jogarDados() {
+    public int [] jogarDados() {
         int d1 = r.nextInt(6) + 1; // 1 a 6
         int d2 = r.nextInt(6) + 1; // 1 a 6
-        int soma = d1 + d2;
-        return soma;
+        int[] dados = new int [2];
+        dados[0] = d1;
+        dados[1] = d2;
+        return dados;
     }
 }

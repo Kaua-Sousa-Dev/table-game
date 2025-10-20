@@ -13,13 +13,17 @@ public class JogadorAzarado extends Jogador{
     }
 
     @Override
-    public int jogarDados() {
+    public int[] jogarDados() {
         int d1, d2, soma;
+        int[] dados = new int [2];
         do {
             d1 = r.nextInt(6) + 1;
             d2 = r.nextInt(6) + 1;
+            dados [0] = d1;
+            dados [1] = d2;
             soma = d1 + d2;
         }while (soma > 6);
-        return soma;
+        
+        return dados;
     }
 }
